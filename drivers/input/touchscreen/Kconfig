@@ -1162,4 +1162,8 @@ config TOUCHSCREEN_IST30XX
 
 source "drivers/input/touchscreen/IST30xx/Kconfig"
 
+config TOUCHSCREEN_DOUBLETAP2WAKE
+	bool "DoubleTap2Wake for touchscreens"
+	default n
+
 endif
