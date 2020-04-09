@@ -60,7 +60,7 @@ MODULE_LICENSE("GPLv2");
 #define DT2W_PWRKEY_DUR		60
 #define DT2W_RADIUS		200
 #define DT2W_TIME		400
-#define VIB_STRENGTH	20
+#define VIB_STRENGTH	        0
 
 #define DT2W_OFF 0
 #define DT2W_ON 1
