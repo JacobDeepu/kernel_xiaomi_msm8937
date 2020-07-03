@@ -1224,6 +1224,10 @@ int sdhci_msm_execute_tuning(struct sdhci_host *host, u32 opcode)
 	struct mmc_card *card = host->mmc->card;
 	int sts_retry;
 	u8 last_good_phase = 0;
+	static int tuning_count;
+
+	pr_err("%s: %s: Tuning count: %d\n",
+			mmc_hostname(mmc), __func__, tuning_count++);
 
 	/*
 	 * Tuning is required for SDR104, HS200 and HS400 cards and
