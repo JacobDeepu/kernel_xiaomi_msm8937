@@ -710,7 +710,7 @@ static inline void msm_cm_dll_set_freq(struct sdhci_host *host)
 		mclk_freq = 5;
 	else if (host->clock <= 187000000)
 		mclk_freq = 6;
-	else if (host->clock <= 208000000)
+	else if (host->clock <= 200000000)
 		mclk_freq = 7;
 
 	writel_relaxed(((readl_relaxed(host->ioaddr +
@@ -1246,7 +1246,7 @@ int sdhci_msm_execute_tuning(struct sdhci_host *host, u32 opcode)
 	if (msm_host->tuning_in_progress)
 		return 0;
 	msm_host->tuning_in_progress = true;
-	pr_debug("%s: Enter %s\n", mmc_hostname(mmc), __func__);
+	pr_err("%s: Enter %s\n", mmc_hostname(mmc), __func__);
 
 	/* CDC/SDC4 DLL HW calibration is only required for HS400 mode*/
 	if (msm_host->tuning_done && !msm_host->calibration_done &&
@@ -1348,7 +1348,7 @@ retry:
 					 * be on safer side 1ms delay is given.
 					 */
 					usleep_range(1000, 1200);
-					pr_debug("%s: phase %d sts cmd err %d resp 0x%x\n",
+					pr_err("%s: phase %d sts cmd err %d resp 0x%x\n",
 						mmc_hostname(mmc), phase,
 						sts_cmd.error, sts_cmd.resp[0]);
 					continue;
@@ -1369,7 +1369,7 @@ retry:
 				mmc->err_stats[MMC_ERR_CMD_CRC]--;
 			else if (data.error)
 				mmc->err_stats[MMC_ERR_DAT_CRC]--;
-			pr_debug("%s: %s: found ## bad ## phase = %d\n",
+			pr_err("%s: %s: found ## bad ## phase = %d\n",
 				mmc_hostname(mmc), __func__, phase);
 		}
 	} while (++phase < 16);
@@ -1425,7 +1425,7 @@ retry:
 		if (rc)
 			goto kfree;
 		msm_host->saved_tuning_phase = phase;
-		pr_debug("%s: %s: finally setting the tuning phase to %d\n",
+		pr_err("%s: %s: finally setting the tuning phase to %d\n",
 				mmc_hostname(mmc), __func__, phase);
 	} else {
 		if (--tuning_seq_cnt)
@@ -1444,7 +1444,7 @@ out:
 		msm_host->tuning_done = true;
 	spin_unlock_irqrestore(&host->lock, flags);
 	msm_host->tuning_in_progress = false;
-	pr_debug("%s: Exit %s, err(%d)\n", mmc_hostname(mmc), __func__, rc);
+	pr_err("%s: Exit %s, err(%d)\n", mmc_hostname(mmc), __func__, rc);
 	return rc;
 }
 
