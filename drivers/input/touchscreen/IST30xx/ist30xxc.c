@@ -52,6 +52,10 @@
 #include <linux/file.h>
 #include <linux/err.h>
 
+#ifdef CONFIG_TOUCHSCREEN_DOUBLETAP2WAKE
+#include <linux/input/doubletap2wake.h>
+#endif
+
 #ifdef CONFIG_OF
 #include <linux/of.h>
 #include <linux/of_gpio.h>
@@ -1253,6 +1257,14 @@ static int ist30xx_suspend(struct device *dev)
 
 	if (data->debugging_mode)
 		return 0;
+
+#ifdef CONFIG_TOUCHSCREEN_DOUBLETAP2WAKE
+	if (dt2w_switch) {
+		enable_irq_wake(data->client->irq);
+		dev_err("%s: Waiting for dt2w\n", __func__);
+		return 0;
+	}
+#endif
 
 	del_timer(&event_timer);
 	cancel_delayed_work_sync(&data->work_noise_protect);

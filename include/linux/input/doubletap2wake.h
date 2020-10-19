@@ -23,6 +23,6 @@
 
 extern int dt2w_switch;
 
-extern bool dt2w_scr_suspended;
+extern bool screen_status;
 
 #endif	/* _LINUX_DOUBLETAP2WAKE_H */

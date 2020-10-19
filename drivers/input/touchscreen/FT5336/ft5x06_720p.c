@@ -34,6 +34,10 @@
 #include <linux/fs.h>
 #include <asm/uaccess.h>
 
+#ifdef CONFIG_TOUCHSCREEN_DOUBLETAP2WAKE
+#include <linux/input/doubletap2wake.h>
+#endif
+
 #if CTP_CHARGER_DETECT
 #include <linux/power_supply.h>
 #endif
@@ -592,7 +596,6 @@ static int ft5x06_ts_pinctrl_select(struct ft5x06_ts_data *ft5x06_data,
 	return 0;
 }
 
-
 #ifdef CONFIG_PM
 static int ft5x06_ts_suspend(struct device *dev)
 {
@@ -609,6 +612,15 @@ static int ft5x06_ts_suspend(struct device *dev)
 		dev_info(dev, "Already in suspend state\n");
 		return 0;
 	}
+
+#ifdef CONFIG_TOUCHSCREEN_DOUBLETAP2WAKE
+	if (dt2w_switch) {
+		enable_irq_wake(data->client->irq);
+		data->suspended = true;
+		dev_err("%s: Waiting for dt2w\n", __func__);
+		return 0;
+	}
+#endif
 
 	disable_irq(data->client->irq);
 
