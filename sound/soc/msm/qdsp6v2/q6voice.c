@@ -28,6 +28,10 @@
 #include "q6voice.h"
 #include <sound/adsp_err.h>
 
+#ifdef CONFIG_TOUCHSCREEN_DOUBLETAP2WAKE
+#include <linux/input/doubletap2wake.h>
+#endif
+
 #define TIMEOUT_MS 300
 
 
@@ -5920,6 +5924,10 @@ int voc_end_voice_call(uint32_t session_id)
 		return -EINVAL;
 	}
 
+#ifdef CONFIG_TOUCHSCREEN_DOUBLETAP2WAKE
+	incall_status = false;
+#endif
+
 	mutex_lock(&v->lock);
 
 	if (v->voc_state == VOC_RUN || v->voc_state == VOC_ERROR ||
@@ -6154,6 +6162,10 @@ int voc_resume_voice_call(uint32_t session_id)
 	struct voice_data *v = voice_get_session(session_id);
 	int ret = 0;
 
+#ifdef CONFIG_TOUCHSCREEN_DOUBLETAP2WAKE
+	incall_status = true;
+#endif
+
 	ret = voice_send_start_voice_cmd(v);
 	if (ret < 0) {
 		pr_err("Fail in sending START_VOICE\n");
@@ -6175,6 +6187,10 @@ int voc_start_voice_call(uint32_t session_id)
 
 		return -EINVAL;
 	}
+
+#ifdef CONFIG_TOUCHSCREEN_DOUBLETAP2WAKE
+	incall_status = true;
+#endif
 
 	mutex_lock(&v->lock);
 
