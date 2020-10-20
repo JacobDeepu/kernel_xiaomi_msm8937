@@ -61,6 +61,8 @@ static struct input_dev * doubletap2wake_pwrdev;
 static DEFINE_MUTEX(pwrkeyworklock);
 static struct workqueue_struct *dt2w_input_wq;
 static struct work_struct dt2w_input_work;
+bool screen_status = false;
+bool incall_status = false;
 
 /* Read cmdline for dt2w */
 static int __init read_dt2w_cmdline(char *dt2w)
@@ -172,7 +174,7 @@ static void dt2w_input_event(struct input_handle *handle, unsigned int type,
 		(code==ABS_MT_TRACKING_ID) ? "ID" :
 		"undef"), code, value);
 #endif
-	if (dt2w_scr_on() || !dt2w_switch)
+	if (screen_status || !dt2w_switch)
 		return;
 
 	if (code == ABS_MT_SLOT) {
@@ -278,6 +280,7 @@ static ssize_t dt2w_doubletap2wake_show(struct device *dev,
 static ssize_t dt2w_doubletap2wake_store(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t count)
 {
+	int i;
 	if (sscanf(buf, "%u", &i) == 1) {
 		dt2w_switch = 1;
 		return count;
